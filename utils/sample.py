@@ -18,4 +18,5 @@ for i in range(500):
         os.mkdir('samples')
     f.write(res)
     print res
+f.close()
 print "File saved in samples/sample_data_%s.raw." % name
