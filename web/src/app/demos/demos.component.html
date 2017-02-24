@@ -1,0 +1,14 @@
+<h2>All Demos</h2>
+<ul>
+  <li *ngFor="let demo of demos"
+    (click)="onSelect(demo)">
+    <span>{{demo.id}}</span> {{demo.name}}
+  </li>
+</ul>
+<div *ngIf="selectedDemo">
+  <h2>
+    {{selectedDemo.name | uppercase}}
+  </h2>
+  <p>{{selectedDemo.comments}}</p>
+  <button (click)="gotoDetail()">View Details</button>
+</div>
