@@ -5,9 +5,7 @@ from sqlalchemy.dialects.mysql import DOUBLE, SMALLINT, VARCHAR, TIMESTAMP, INTE
 from sqlalchemy import Column, ForeignKey, create_engine
 
 # Database information
-USERNAME = "curling"
-PASSWORD = "tit2kta;cpd]Ka3fHQus"
-HOSTNAME = "outreach.cs.dal.ca"
+
 PORT = 3306
 DB_NAME = "curling"
 URI = "mysql://{0}:{1}@{2}:{3}/{4}".format(USERNAME, PASSWORD, HOSTNAME, PORT, DB_NAME)
@@ -26,7 +24,7 @@ def save(table_object):
 
     Args:
         table_object: an instance of a class that is mapped to a table in the database
-    
+
     Throws:
         TypeError: if class type cannot be saved
         (Also SqlAlchemy errors)
@@ -78,13 +76,13 @@ def print_instances(table_class):
 class DemoSession(Base):
     __tablename__ = 'Session'
 
-    def __init__(self, 
-                 first_name, 
-                 last_name=None, 
-                 notes=None, 
-                 email=None, 
-                 mean_maximum_force=None, 
-                 mean_sustained_force=None, 
+    def __init__(self,
+                 first_name,
+                 last_name=None,
+                 notes=None,
+                 email=None,
+                 mean_maximum_force=None,
+                 mean_sustained_force=None,
                  mean_brushing_force=None,
                  mean_stroke_rate=None):
         self.firstName = first_name
@@ -141,10 +139,10 @@ class RawData(Base):
 class ProcessedData(Base):
     __tablename__ = 'ProcessedData'
 
-    def __init__(self, 
-                 timestamp, 
-                 session_id, 
-                 broom_angle, 
+    def __init__(self,
+                 timestamp,
+                 session_id,
+                 broom_angle,
                  vertical_force,
                  horizontal_force):
         self.timestamp = timestamp
@@ -167,7 +165,7 @@ class ProcessedData(Base):
 # Create tables
 Base.metadata.create_all(engine)
 
-    
+
 if __name__ == "__main__":
     # Example usage
     demo = DemoSession("Kermit")
