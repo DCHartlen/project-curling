@@ -42,6 +42,10 @@ class UI(QtGui.QWidget):
         btnDisconnect.clicked.connect(self.disconnectFromBroom)
         lblReady = QtGui.QLabel('', self)
         prgTimer = QtGui.QProgressBar(self)
+        logo = QtGui.QPixmap(95, 45)
+        logo.load('logo.png')
+        lblLogo = QtGui.QLabel(self)
+        lblLogo.setPixmap(logo)
         title = QtGui.QLabel('Curling Demo')
         fName = QtGui.QLabel('First Name:')
         lName = QtGui.QLabel('Last Name:')
@@ -49,6 +53,33 @@ class UI(QtGui.QWidget):
         notes = QtGui.QTextEdit()
         fNameEdit = QtGui.QLineEdit()
         lNameEdit = QtGui.QLineEdit()
+
+        #fonts
+        titleFont = QtGui.QFont()
+        titleFont.setPointSize(14)
+        title.setFont(titleFont)
+
+        buttonFont = QtGui.QFont()
+        buttonFont.setPointSize(11)
+        btnConnect.setFont(buttonFont)
+        btnDisconnect.setFont(buttonFont)
+        btnDiscard.setFont(buttonFont)
+        btnSave.setFont(buttonFont)
+        btnStart.setFont(buttonFont)
+
+        lblFont = QtGui.QFont()
+        lblFont.setPointSize(11)
+        lblReady.setFont(lblFont)
+        prgTimer.setFont(lblFont)
+        fName.setFont(lblFont)
+        lName.setFont(lblFont)
+        notes.setFont(lblFont)
+        lblNotes.setFont(lblFont)
+        fNameEdit.setFont(lblFont)
+        lNameEdit.setFont(lblFont)
+
+        #background
+        btnStart.setStyleSheet('QPushButton {background-color: #aeffae; }')
 
         #disabling buttons
         btnStart.setEnabled(False)
@@ -59,7 +90,8 @@ class UI(QtGui.QWidget):
         #adding buttons, labels, textboxes etc to UI
         grid = QtGui.QGridLayout()
         grid.setSpacing(10)
-        grid.addWidget(title, 1, 0)
+        grid.addWidget(lblLogo,1,0)
+        grid.addWidget(title, 1, 1)
         grid.addWidget(btnConnect, 2, 0, 1, 2)
         grid.addWidget(btnDisconnect, 2, 2, 1, 2)
         grid.addWidget(fName, 3, 0)
@@ -74,7 +106,7 @@ class UI(QtGui.QWidget):
         grid.addWidget(btnSave, 8, 2, 1, 1)
         grid.addWidget(btnStart, 8, 3, 1, 1)
         self.setLayout(grid)
-        self.setGeometry(200, 200, 350, 150)
+        self.setGeometry(200, 200, 450, 400)
         self.setWindowTitle('Curling Demo - (Disconnected)')
         self.show()
 
@@ -83,12 +115,14 @@ class UI(QtGui.QWidget):
         self.conn_worker = ConnectionWorker()
         self.conn_worker.start()
 
+    def ifConnected(self):
         connected = True
         btnStart.setEnabled(True)
         self.setWindowTitle('Curling Demo - (Connected)')
         self.setWindowIcon(QtGui.QIcon('connected.png'))
         btnConnect.setEnabled(False)
         btnDisconnect.setEnabled(True)
+
 
     #method for disconnecting to the broom
     def disconnectFromBroom(self):
@@ -154,7 +188,7 @@ class UI(QtGui.QWidget):
     #set the progress on the progress bar
     def setProgress(self, progress):
         prgTimer.setValue(progress)
-        print progress
+        #print progress
         if progress == -5:
             self.conn_worker.angle = True
         if progress == 0:
@@ -195,20 +229,29 @@ class ConnectionWorker(QtCore.QThread):
         self.record = False
         self.angle = False
 
-
     def run(self):
         self.memory = 'Angle\n'
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Create the socket
-        self.socket.connect((HOST, PORT)) # Connect to the broom
+        try:
+            lblReady.setText('Connecting...')
+            self.socket.connect((HOST, PORT)) #Connect to the broom
+            #once connected...
+            ifConnected(self)
+        except socket.error as e:
+            lblReady.setText('Unable to connect.')
+            self.terminate() #You're terminated
+
         while True:
-            res = self.socket.recv(80)
-            if self.record or self.angle:
-                self.memory = "%s%s" % (self.memory, res)
-            if self.record and self.angle:
-                self.memory = "%s%s" % (self.memory, "Data\n")
-                self.angle = False
-
-
+            try:
+                res = self.socket.recv(80)
+                if self.record or self.angle:
+                    self.memory = "%s%s" % (self.memory, res)
+                if self.record and self.angle:
+                    self.memory = "%s%s" % (self.memory, "Data\n")
+                    self.angle = False
+            except socket.error as e:
+                lblReady.setText('Unable to connect.')
+                self.terminate() #You're terminated
 
 def main():
 
