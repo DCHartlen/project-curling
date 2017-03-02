@@ -19,4 +19,4 @@ for i in range(500):
     f.write(res)
     print res
 f.close()
-print "File saved in samples/sample_data_%s.raw." % name
+print "File saved in samples/sample_data_%s.kermit." % name

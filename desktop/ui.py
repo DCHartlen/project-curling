@@ -1,16 +1,20 @@
 import time, sys
+import socket
 from PySide import QtGui, QtCore
+
+HOST = "192.168.4.1"
+PORT = 23
 
 #Class used for the UI
 class UI(QtGui.QWidget):
     def __init__(self):
         super(UI, self).__init__()
-        
+
         self.initUI()
-    
-    #initializes UI    
+
+    #initializes UI
     def initUI(self):
-        
+
         #global variables
         global connected
         global btnSave
@@ -27,17 +31,21 @@ class UI(QtGui.QWidget):
         #creating buttons, labels, textboxes.
         self.setWindowIcon(QtGui.QIcon('disconnected.png'))
         btnSave = QtGui.QPushButton('Save')
-        btnSave.clicked.connect(self.saveDemo) 
+        btnSave.clicked.connect(self.saveDemo)
         btnDiscard = QtGui.QPushButton('Discard')
-        btnDiscard.clicked.connect(self.discardDemo) 
+        btnDiscard.clicked.connect(self.discardDemo)
         btnStart = QtGui.QPushButton('Start')
-        btnStart.clicked.connect(self.startDemo) 
+        btnStart.clicked.connect(self.startDemo)
         btnConnect = QtGui.QPushButton('Connect')
         btnConnect.clicked.connect(self.connectToBroom)
         btnDisconnect = QtGui.QPushButton('Disconnect')
         btnDisconnect.clicked.connect(self.disconnectFromBroom)
         lblReady = QtGui.QLabel('', self)
         prgTimer = QtGui.QProgressBar(self)
+        logo = QtGui.QPixmap(95, 45)
+        logo.load('logo.png')
+        lblLogo = QtGui.QLabel(self)
+        lblLogo.setPixmap(logo)
         title = QtGui.QLabel('Curling Demo')
         fName = QtGui.QLabel('First Name:')
         lName = QtGui.QLabel('Last Name:')
@@ -45,6 +53,33 @@ class UI(QtGui.QWidget):
         notes = QtGui.QTextEdit()
         fNameEdit = QtGui.QLineEdit()
         lNameEdit = QtGui.QLineEdit()
+
+        #fonts
+        titleFont = QtGui.QFont()
+        titleFont.setPointSize(14)
+        title.setFont(titleFont)
+
+        buttonFont = QtGui.QFont()
+        buttonFont.setPointSize(11)
+        btnConnect.setFont(buttonFont)
+        btnDisconnect.setFont(buttonFont)
+        btnDiscard.setFont(buttonFont)
+        btnSave.setFont(buttonFont)
+        btnStart.setFont(buttonFont)
+
+        lblFont = QtGui.QFont()
+        lblFont.setPointSize(11)
+        lblReady.setFont(lblFont)
+        prgTimer.setFont(lblFont)
+        fName.setFont(lblFont)
+        lName.setFont(lblFont)
+        notes.setFont(lblFont)
+        lblNotes.setFont(lblFont)
+        fNameEdit.setFont(lblFont)
+        lNameEdit.setFont(lblFont)
+
+        #background
+        btnStart.setStyleSheet('QPushButton {background-color: #aeffae; }')
 
         #disabling buttons
         btnStart.setEnabled(False)
@@ -55,7 +90,8 @@ class UI(QtGui.QWidget):
         #adding buttons, labels, textboxes etc to UI
         grid = QtGui.QGridLayout()
         grid.setSpacing(10)
-        grid.addWidget(title, 1, 0)
+        grid.addWidget(lblLogo,1,0)
+        grid.addWidget(title, 1, 1)
         grid.addWidget(btnConnect, 2, 0, 1, 2)
         grid.addWidget(btnDisconnect, 2, 2, 1, 2)
         grid.addWidget(fName, 3, 0)
@@ -70,14 +106,16 @@ class UI(QtGui.QWidget):
         grid.addWidget(btnSave, 8, 2, 1, 1)
         grid.addWidget(btnStart, 8, 3, 1, 1)
         self.setLayout(grid)
-        self.setGeometry(200, 200, 350, 150)
-        self.setWindowTitle('Curling Demo - (Disconnected)')    
+        self.setGeometry(200, 200, 450, 400)
+        self.setWindowTitle('Curling Demo - (Disconnected)')
         self.show()
-    
-    #method for connecting to the broom    
+
+    #method for connecting to the broom
     def connectToBroom(self):
-        #Code to connect to broom here...
-        #if parameters are met...
+        self.conn_worker = ConnectionWorker()
+        self.conn_worker.start()
+
+    def ifConnected(self):
         connected = True
         btnStart.setEnabled(True)
         self.setWindowTitle('Curling Demo - (Connected)')
@@ -85,8 +123,12 @@ class UI(QtGui.QWidget):
         btnConnect.setEnabled(False)
         btnDisconnect.setEnabled(True)
 
+
     #method for disconnecting to the broom
     def disconnectFromBroom(self):
+        self.conn_worker.exit()
+        self.conn_worker.socket.close()
+
         connected = False
         self.setWindowTitle('Curling Demo - (Disconnected)')
         self.setWindowIcon(QtGui.QIcon('disconnected.png'))
@@ -97,7 +139,7 @@ class UI(QtGui.QWidget):
 
     #method for starting the demo
     def startDemo(self):
-        #Code to start demo here...
+
         btnStart.setEnabled(False)
         btnSave.setEnabled(False)
         btnDiscard.setEnabled(False)
@@ -105,14 +147,19 @@ class UI(QtGui.QWidget):
         btnDisconnect.setEnabled(False)
         #time the program runs
 
-        self.worker = Worker()
-        self.worker.updateProgress.connect(self.setProgress)
-        self.worker.start()
+        self.demo_worker = DemoWorker()
+        self.demo_worker.updateProgress.connect(self.setProgress)
+        self.demo_worker.start()
 
     #method for saving the demo
     def saveDemo(self):
-        #Code to save the demo here...
+
         if fNameEdit.text() != "":
+            filename = "%s_%s_%s.kermit" % (fNameEdit.text(), lNameEdit.text(), time.clock())
+            f = file(filename, "w")
+            f.write(self.conn_worker.memory)
+            f.close()
+            self.conn_worker.memory = "Angle\n"
             btnSave.setEnabled(False)
             btnDiscard.setEnabled(False)
             btnDisconnect.setEnabled(True)
@@ -127,6 +174,7 @@ class UI(QtGui.QWidget):
 
     #method for discarding a demo
     def discardDemo(self):
+            self.conn_worker.memory = "Angle\n"
             btnSave.setEnabled(False)
             btnDiscard.setEnabled(False)
             btnDisconnect.setEnabled(True)
@@ -140,9 +188,16 @@ class UI(QtGui.QWidget):
     #set the progress on the progress bar
     def setProgress(self, progress):
         prgTimer.setValue(progress)
+        #print progress
+        if progress == -5:
+            self.conn_worker.angle = True
+        if progress == 0:
+            self.conn_worker.record = True
+        if progress == 100:
+            self.conn_worker.record = False
 
 #This class is used to multithread the timer, so it doesn't freeze the UI.
-class Worker(QtCore.QThread):
+class DemoWorker(QtCore.QThread):
     updateProgress = QtCore.Signal(int)
 
     def __init__(self):
@@ -158,16 +213,48 @@ class Worker(QtCore.QThread):
             elif i == 30:
                 lblReady.setText('Go!')
             #Sending the update to the UI.
-            else:
-                self.updateProgress.emit(i-30)
+            self.updateProgress.emit(i-30)
             time.sleep(0.1)
 
         btnSave.setEnabled(True)
         btnDiscard.setEnabled(True)
         btnDisconnect.setEnabled(False)
 
+class ConnectionWorker(QtCore.QThread):
+    """
+    Thread for controlling the connection to the broom."""
+
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+        self.record = False
+        self.angle = False
+
+    def run(self):
+        self.memory = 'Angle\n'
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Create the socket
+        try:
+            lblReady.setText('Connecting...')
+            self.socket.connect((HOST, PORT)) #Connect to the broom
+            #once connected...
+            ifConnected(self)
+        except socket.error as e:
+            lblReady.setText('Unable to connect.')
+            self.terminate() #You're terminated
+
+        while True:
+            try:
+                res = self.socket.recv(80)
+                if self.record or self.angle:
+                    self.memory = "%s%s" % (self.memory, res)
+                if self.record and self.angle:
+                    self.memory = "%s%s" % (self.memory, "Data\n")
+                    self.angle = False
+            except socket.error as e:
+                lblReady.setText('Unable to connect.')
+                self.terminate() #You're terminated
+
 def main():
-    
+
     app = QtGui.QApplication(sys.argv)
     ex = UI()
     sys.exit(app.exec_())
