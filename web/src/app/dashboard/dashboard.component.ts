@@ -15,6 +15,6 @@ export class DashboardComponent implements OnInit{
 
   ngOnInit(): void {
     this.demoService.getDemos()
-      .then(demos => this.demos = demos.slice(1, 3));
+        .then((demos: Demo[]) => this.demos = demos.slice(0, 3));
   }
 }
