@@ -252,7 +252,7 @@ class ConnectionWorker(QtCore.QThread):
         while True:
             try:
                 res = self.socket.recv(80)
-                if self.angle === True:
+                if self.angle == True:
                     self.angle = res
                 if self.record:
                     self.memory = "%s%s" % (self.memory, res)
