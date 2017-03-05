@@ -5,7 +5,9 @@ from sqlalchemy.dialects.mysql import DOUBLE, SMALLINT, VARCHAR, TIMESTAMP, INTE
 from sqlalchemy import Column, ForeignKey, create_engine
 
 # Database information
-
+USERNAME = "curling"
+PASSWORD = "tit2kta;cpd]Ka3fHQus"
+HOSTNAME = "outreach.cs.dal.ca"
 PORT = 3306
 DB_NAME = "curling"
 URI = "mysql://{0}:{1}@{2}:{3}/{4}".format(USERNAME, PASSWORD, HOSTNAME, PORT, DB_NAME)
