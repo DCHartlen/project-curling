@@ -114,16 +114,16 @@ class UI(QtGui.QWidget):
     #method for connecting to the broom
     def connectToBroom(self):
         self.conn_worker = ConnectionWorker(self) # Pass the parent so it can ifConnected
+        try:
+            self.conn_worker.updateUI.connect(self.changeIcon())
+        except RuntimeError as e:
+            pass#this is fine
         self.conn_worker.start()
+        #self.changeIcon()
 
-    def ifConnected(self):
-        connected = True
-        btnStart.setEnabled(True)
-        self.setWindowTitle('Curling Demo - (Connected)')
+    #changing the icon on the broom
+    def changeIcon(self):
         self.setWindowIcon(QtGui.QIcon(os.path.join('images', 'connected.png')))
-        btnConnect.setEnabled(False)
-        btnDisconnect.setEnabled(True)
-
 
     #method for disconnecting to the broom
     def disconnectFromBroom(self):
@@ -190,7 +190,6 @@ class UI(QtGui.QWidget):
     #set the progress on the progress bar
     def setProgress(self, progress):
         prgTimer.setValue(progress)
-        #print progress
         if progress == -5:
             self.conn_worker.angle = True
         if progress == 0:
@@ -204,7 +203,6 @@ class DemoWorker(QtCore.QThread):
 
     def __init__(self):
         QtCore.QThread.__init__(self)
-
     #what happens when the timer is running. 10s atm + 3 for the countdown
     def run(self):
         for i in range(1, 131):
@@ -225,6 +223,7 @@ class DemoWorker(QtCore.QThread):
 class ConnectionWorker(QtCore.QThread):
     """
     Thread for controlling the connection to the broom."""
+    updateUI = QtCore.Signal()
 
     def __init__(self, parent):
         QtCore.QThread.__init__(self)
@@ -241,14 +240,19 @@ class ConnectionWorker(QtCore.QThread):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Create the socket
         try:
             lblReady.setText('Connecting...')
+            self.parent.setWindowTitle('Curling Demo - (Connecting)')
             self.socket.connect((HOST, PORT)) #Connect to the broom
             #once connected...
-            self.parent.ifConnected()
+            self.updateUI.emit()
+            connected = True
+            btnStart.setEnabled(True)
+            btnConnect.setEnabled(False)
+            btnDisconnect.setEnabled(True)
+            self.parent.setWindowTitle('Curling Demo - (Connected)')
             lblReady.setText('Connected!')
         except socket.error as e:
             lblReady.setText('Unable to connect.')
             self.terminate() #You're terminated
-
         while True:
             try:
                 res = self.socket.recv(80)
