@@ -68,9 +68,9 @@ class RawDataPoint(JsonBase):
 class ProcessedDataPoint(JsonBase):
     def __init__(self,
                  timestamp,
-                 broom_angle,
                  vertical_force,
-                 horizontal_force):
+                 horizontal_force,
+                 broom_angle):
         JsonBase.__init__(self)
 
         self.values["timestamp"] = timestamp
