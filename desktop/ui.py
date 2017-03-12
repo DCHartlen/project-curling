@@ -8,6 +8,8 @@ from PySide import QtGui, QtCore
 import pandas as pd
 import numpy as np
 
+from database import RawDataPoint, ProcessedDataPoint, Session
+
 HOST = "192.168.4.1"
 PORT = 23
 
@@ -168,6 +170,23 @@ class UI(QtGui.QWidget):
             f.close()
             self.processor = ProcessingWorking(self.conn_worker.memory, self.conn_worker.angle)
             self.processor.start()
+
+            # Save to database
+            raw_data_points = []
+            for index, raw_data in self.processor.p_data.loc[:, range(0, 15)].iterrows():
+                raw_data_points.append(RawDataPoint(*raw_data))
+
+            processed_data_points = []
+            for index, processed_data in self.processor.p_data.loc[:, [0, 'v_force', 'h_force']].iterrows():
+                processed_data_points.append(ProcessedDataPoint(*processed_data, broom_angle=self.processor.angle))
+
+            try: 
+                session = Session(fNameEdit.text(), raw_data_points, processed_data_points, lNameEdit.text(), notes.text())
+                id = session.save()
+            except RuntimeError as error:
+                print(error)
+
+            # Reset UI
             self.conn_worker.memory = None
             btnSave.setEnabled(False)
             btnDiscard.setEnabled(False)
