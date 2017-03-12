@@ -31,7 +31,6 @@ class JsonBase():
 class RawDataPoint(JsonBase):
     def __init__(self,
                  timestamp,
-                 session_id,
                  head_ax,
                  head_ay,
                  head_az,
@@ -69,14 +68,12 @@ class RawDataPoint(JsonBase):
 class ProcessedDataPoint(JsonBase):
     def __init__(self,
                  timestamp,
-                 session_id,
                  broom_angle,
                  vertical_force,
                  horizontal_force):
         JsonBase.__init__(self)
 
         self.values["timestamp"] = timestamp
-        self.values["sessionId"] = session_id
         self.values["broomAngle"] = broom_angle
         self.values["verticalForce"] = vertical_force
         self.values["horizontalForce"] = horizontal_force
@@ -126,13 +123,13 @@ class Session(JsonBase):
 if __name__ == "__main__":
     # Example usage
     processed_data_points = [
-        ProcessedDataPoint(1, 1, 12, 13, 14), 
-        ProcessedDataPoint(2, 1, 13, 14, 15)
+        ProcessedDataPoint(1, 12, 13, 14), 
+        ProcessedDataPoint(2, 13, 14, 15)
     ]
 
     raw_data_points = [
-        RawDataPoint(1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14),
-        RawDataPoint(2, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+        RawDataPoint(1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14),
+        RawDataPoint(2, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
     ]
 
     session = Session('Aleysha',
