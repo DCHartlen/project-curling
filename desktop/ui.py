@@ -160,7 +160,9 @@ class UI(QtGui.QWidget):
     def saveDemo(self):
 
         if fNameEdit.text() != "":
-            filename = "%s_%s_%s.kermit" % (fNameEdit.text(), lNameEdit.text(), time.clock())
+            if not os.path.exists('kermits'):
+                os.mkdir('kermits')
+            filename = "kermits/%s_%s_%s.kermit" % (fNameEdit.text(), lNameEdit.text(), time.clock())
             f = file(filename, "w")
             f.write(self.conn_worker.memory)
             f.close()
@@ -181,7 +183,6 @@ class UI(QtGui.QWidget):
 
     #method for discarding a demo
     def discardDemo(self):
-            self.conn_worker.memory = "Angle\n"
             btnSave.setEnabled(False)
             btnDiscard.setEnabled(False)
             btnDisconnect.setEnabled(True)
@@ -276,14 +277,15 @@ class ProcessingWorking(QtCore.QThread):
         self.data = data
         angle_f = [float(x) for x in angle.split(', ')]
         quo = angle_f[5] / angle_f[6]
-        self.angle = np.rad2deg(np.arctan(quo))
-        print "Angle atan(%d/%d (%f)): %f" % (angle_f[5], angle_f[6], quo, self.angle)
+        self.angle = np.rad2deg(np.tan(quo))
+        print "Angle tan(%d/%d (%f)): %f" % (angle_f[5], angle_f[6], quo, self.angle)
 
     def run(self):
         # Process out of raw format
         arr = []
         for row in self.data.split('\n'):
             try:
+                print row
                 cols = [int(x) for x in row.split(', ')] # Converts columns to ints
                 if len(cols) == 15:
                     arr.append(cols)
@@ -291,7 +293,21 @@ class ProcessingWorking(QtCore.QThread):
             except ValueError:
                 break # End of memory
         df = pd.DataFrame(arr)
-        print df
+        df['e1'] = (-4 / (2.13 * 300)) * (df[11] / 3.3)
+        df['e2'] = (-4 / (2.13 * 300)) * (df[12] / 3.3)
+        df['axial_strain'] = -0.5 * (df['e1'] + df['e2'])
+        df['bending_strain'] = 0.5 * (df['e1'] - df['e2'])
+
+        KA = 13.644
+        KB = 846.972
+
+        df['fa'] = df['axial_strain'] * KA
+        df['fb'] = df['bending_strain'] * KB
+
+        df['v_force'] = df['fa'] * np.sin(self.angle) + df['fb'] * np.cos(self.angle)
+        df['h_force'] = df['fa'] * np.cos(self.angle) + df['fb'] * np.sin(self.angle)
+        df.to_csv('last.csv')
+
 
 
 
