@@ -1,7 +1,12 @@
+from __future__ import division
+
 import time, sys
 import socket
 import os
+import math
 from PySide import QtGui, QtCore
+import pandas as pd
+import numpy as np
 
 HOST = "192.168.4.1"
 PORT = 23
@@ -159,9 +164,9 @@ class UI(QtGui.QWidget):
             f = file(filename, "w")
             f.write(self.conn_worker.memory)
             f.close()
-            self.processor = ProcessingWorking(self.conn_worker.memory, conn_worker.angle)
+            self.processor = ProcessingWorking(self.conn_worker.memory, self.conn_worker.angle)
             self.processor.start()
-            self.conn_worker.memory = "Angle\n"
+            self.conn_worker.memory = None
             btnSave.setEnabled(False)
             btnDiscard.setEnabled(False)
             btnDisconnect.setEnabled(True)
@@ -236,7 +241,7 @@ class ConnectionWorker(QtCore.QThread):
         self.terminate()
 
     def run(self):
-        # self.memory = 'Angle\n'
+        self.memory = ''
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Create the socket
         try:
             lblReady.setText('Connecting...')
@@ -256,8 +261,9 @@ class ConnectionWorker(QtCore.QThread):
         while True:
             try:
                 res = self.socket.recv(80)
-                if self.angle == True:
-                    self.angle = res
+                if self.angle == True and type(self.angle) == bool:
+                    if len(res.split(', ')) == 15:
+                        self.angle = res
                 if self.record:
                     self.memory = "%s%s" % (self.memory, res)
             except socket.error as e:
@@ -268,13 +274,25 @@ class ProcessingWorking(QtCore.QThread):
     def __init__(self, data, angle):
         QtCore.QThread.__init__(self)
         self.data = data
-        self.angle_frame = angle
+        angle_f = [float(x) for x in angle.split(', ')]
+        quo = angle_f[5] / angle_f[6]
+        self.angle = np.rad2deg(np.arctan(quo))
+        print "Angle atan(%d/%d (%f)): %f" % (angle_f[5], angle_f[6], quo, self.angle)
 
     def run(self):
         # Process out of raw format
+        arr = []
         for row in self.data.split('\n'):
-            cols = [int(x) for x in row.split(', ')] # Converts columns to ints
-            print cols
+            try:
+                cols = [int(x) for x in row.split(', ')] # Converts columns to ints
+                if len(cols) == 15:
+                    arr.append(cols)
+
+            except ValueError:
+                break # End of memory
+        df = pd.DataFrame(arr)
+        print df
+
 
 
 
