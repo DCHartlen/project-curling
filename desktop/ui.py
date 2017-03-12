@@ -278,6 +278,7 @@ class ProcessingWorking(QtCore.QThread):
         angle_f = [float(x) for x in angle.split(', ')]
         quo = angle_f[5] / angle_f[6]
         self.angle = np.rad2deg(np.tan(quo))
+        self.p_data = None
         print "Angle tan(%d/%d (%f)): %f" % (angle_f[5], angle_f[6], quo, self.angle)
 
     def run(self):
@@ -307,6 +308,7 @@ class ProcessingWorking(QtCore.QThread):
         df['v_force'] = df['fa'] * np.sin(self.angle) + df['fb'] * np.cos(self.angle)
         df['h_force'] = df['fa'] * np.cos(self.angle) + df['fb'] * np.sin(self.angle)
         df.to_csv('last.csv')
+        self.p_data = df
 
 
 
