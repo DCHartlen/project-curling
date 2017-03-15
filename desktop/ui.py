@@ -1,7 +1,12 @@
+from __future__ import division
+
 import time, sys
 import socket
 import os
+import math
 from PySide import QtGui, QtCore
+import pandas as pd
+import numpy as np
 
 HOST = "192.168.4.1"
 PORT = 23
@@ -114,16 +119,16 @@ class UI(QtGui.QWidget):
     #method for connecting to the broom
     def connectToBroom(self):
         self.conn_worker = ConnectionWorker(self) # Pass the parent so it can ifConnected
+        try:
+            self.conn_worker.updateUI.connect(self.changeIcon())
+        except RuntimeError as e:
+            pass#this is fine
         self.conn_worker.start()
+        #self.changeIcon()
 
-    def ifConnected(self):
-        connected = True
-        btnStart.setEnabled(True)
-        self.setWindowTitle('Curling Demo - (Connected)')
+    #changing the icon on the broom
+    def changeIcon(self):
         self.setWindowIcon(QtGui.QIcon(os.path.join('images', 'connected.png')))
-        btnConnect.setEnabled(False)
-        btnDisconnect.setEnabled(True)
-
 
     #method for disconnecting to the broom
     def disconnectFromBroom(self):
@@ -159,9 +164,9 @@ class UI(QtGui.QWidget):
             f = file(filename, "w")
             f.write(self.conn_worker.memory)
             f.close()
-            self.processor = ProcessingWorking(self.conn_worker.memory, conn_worker.angle)
+            self.processor = ProcessingWorking(self.conn_worker.memory, self.conn_worker.angle)
             self.processor.start()
-            self.conn_worker.memory = "Angle\n"
+            self.conn_worker.memory = None
             btnSave.setEnabled(False)
             btnDiscard.setEnabled(False)
             btnDisconnect.setEnabled(True)
@@ -190,7 +195,6 @@ class UI(QtGui.QWidget):
     #set the progress on the progress bar
     def setProgress(self, progress):
         prgTimer.setValue(progress)
-        #print progress
         if progress == -5:
             self.conn_worker.angle = True
         if progress == 0:
@@ -204,7 +208,6 @@ class DemoWorker(QtCore.QThread):
 
     def __init__(self):
         QtCore.QThread.__init__(self)
-
     #what happens when the timer is running. 10s atm + 3 for the countdown
     def run(self):
         for i in range(1, 131):
@@ -225,6 +228,7 @@ class DemoWorker(QtCore.QThread):
 class ConnectionWorker(QtCore.QThread):
     """
     Thread for controlling the connection to the broom."""
+    updateUI = QtCore.Signal()
 
     def __init__(self, parent):
         QtCore.QThread.__init__(self)
@@ -237,23 +241,29 @@ class ConnectionWorker(QtCore.QThread):
         self.terminate()
 
     def run(self):
-        # self.memory = 'Angle\n'
+        self.memory = ''
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Create the socket
         try:
             lblReady.setText('Connecting...')
+            self.parent.setWindowTitle('Curling Demo - (Connecting)')
             self.socket.connect((HOST, PORT)) #Connect to the broom
             #once connected...
-            self.parent.ifConnected()
+            self.updateUI.emit()
+            connected = True
+            btnStart.setEnabled(True)
+            btnConnect.setEnabled(False)
+            btnDisconnect.setEnabled(True)
+            self.parent.setWindowTitle('Curling Demo - (Connected)')
             lblReady.setText('Connected!')
         except socket.error as e:
             lblReady.setText('Unable to connect.')
             self.terminate() #You're terminated
-
         while True:
             try:
                 res = self.socket.recv(80)
-                if self.angle == True:
-                    self.angle = res
+                if self.angle == True and type(self.angle) == bool:
+                    if len(res.split(', ')) == 15:
+                        self.angle = res
                 if self.record:
                     self.memory = "%s%s" % (self.memory, res)
             except socket.error as e:
@@ -264,13 +274,25 @@ class ProcessingWorking(QtCore.QThread):
     def __init__(self, data, angle):
         QtCore.QThread.__init__(self)
         self.data = data
-        self.angle_frame = angle
+        angle_f = [float(x) for x in angle.split(', ')]
+        quo = angle_f[5] / angle_f[6]
+        self.angle = np.rad2deg(np.arctan(quo))
+        print "Angle atan(%d/%d (%f)): %f" % (angle_f[5], angle_f[6], quo, self.angle)
 
     def run(self):
         # Process out of raw format
+        arr = []
         for row in self.data.split('\n'):
-            cols = [int(x) for x in row.split(', ')] # Converts columns to ints
-            print cols
+            try:
+                cols = [int(x) for x in row.split(', ')] # Converts columns to ints
+                if len(cols) == 15:
+                    arr.append(cols)
+
+            except ValueError:
+                break # End of memory
+        df = pd.DataFrame(arr)
+        print df
+
 
 
 
