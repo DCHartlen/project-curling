@@ -1,0 +1,8 @@
+<h3>Most Recent Records</h3>
+<div >
+  <div *ngFor="let demo of demos" [routerLink]="['/detail', demo.id]">
+    <div>
+      <h4>{{demo.firstName}}</h4>
+    </div>
+  </div>
+</div>

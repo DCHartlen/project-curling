@@ -1,0 +1,6 @@
+*.pyc
+.DS_Store
+samples/
+samples/*
+kermits/
+*.kermit

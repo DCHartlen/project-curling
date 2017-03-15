@@ -1,0 +1,10 @@
+<div *ngIf="demo">
+  <h2>{{demo.firstName}} Demo Details!</h2>
+  <div><label>id: </label>{{demo.id}}</div>
+  <div>
+    <label>name: </label>
+    <input [(ngModel)]="demo.firstName" placeholder="name"/>
+  </div>
+  <div><label>Mean Max Force: </label>{{demo.meanMaximumForce}}</div>
+  <button (click)="goBack()">Back</button>
+</div>
