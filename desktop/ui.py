@@ -173,6 +173,8 @@ class UI(QtGui.QWidget):
 
             # Save to database
             raw_data_points = []
+            while self.processor.p_data is None:
+                pass
             for index, raw_data in self.processor.p_data.loc[:, range(0, 15)].iterrows():
                 raw_data_points.append(RawDataPoint(*raw_data))
 
@@ -180,8 +182,8 @@ class UI(QtGui.QWidget):
             for index, processed_data in self.processor.p_data.loc[:, [0, 'v_force', 'h_force']].iterrows():
                 processed_data_points.append(ProcessedDataPoint(*processed_data, broom_angle=self.processor.angle))
 
-            try: 
-                session = Session(fNameEdit.text(), raw_data_points, processed_data_points, lNameEdit.text(), notes.text())
+            try:
+                session = Session(fNameEdit.text(), raw_data_points, processed_data_points, lNameEdit.text(), notes.toPlainText())
                 id = session.save()
             except RuntimeError as error:
                 print(error)
