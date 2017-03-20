@@ -13,6 +13,8 @@ import { DemoService }  from '../shared/demo.service';
 })
 export class DemoDetailComponent implements OnInit {
   demo: Demo;
+  showDetails = false;
+  searchFirstName = "";
 
   constructor(
     private demoService: DemoService,
@@ -20,10 +22,21 @@ export class DemoDetailComponent implements OnInit {
     private location: Location
   ) {}
 
+  public showDiv(): void {
+      this.showDetails = true;
+  }
+
+  public reset(): void {
+      this.showDetails = false;
+  }
+
   ngOnInit(): void {
     this.route.params
-      .switchMap((params: Params) => this.demoService.getDemo(+params['id']))
-      .subscribe(demo => this.demo = demo);
+      .switchMap((params: Params) => this.demoService.getDemoById(+params['id']))
+        .subscribe(demo => {
+            this.demo = demo;
+            this.searchFirstName = demo.firstName;
+        });
   }
 
   goBack(): void {

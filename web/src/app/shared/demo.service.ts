@@ -22,11 +22,25 @@ export class DemoService {
           .catch(this.handleError);
   }
 
-  getDemo(id: number): Promise<Demo> {
-    return this.getDemos()
-        .then(demos => {
-            return demos.find(demo => demo.id === id);
-        });
+  getDemosByDate(startDate: string, endDate: string): Promise<Demo[]> {
+      return this.http.get(this.baseUrl + '/get-demos.php?startDate=' + startDate + '&endDate=' + endDate)
+          .map(this.extractData)
+          .toPromise()
+          .catch(this.handleError);
+  }
+
+  getMostRecentDemos(numberOfDemos: number): Promise<Demo[]> {
+      return this.http.get(this.baseUrl + '/get-demos.php?mostRecent=' + numberOfDemos)
+          .map(this.extractData)
+          .toPromise()
+          .catch(this.handleError);
+  }
+
+  getDemoById(id: number): Promise<Demo> {
+      return this.http.get(this.baseUrl + '/get-demo.php?id=' + id)
+          .map(this.extractData)
+          .toPromise()
+          .catch(this.handleError);
   }
 
   private extractData(res: Response) : Demo[] {
