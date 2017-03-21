@@ -39,7 +39,6 @@ export class DemoDetailComponent implements OnInit {
       .switchMap((params: Params) => this.demoService.getDemoById(+params['id']))
         .subscribe(demo => {
             this.demo = demo;
-            this.searchFirstName = demo.firstName;
         });
 
     this.demoService.getMostRecentDemos(10).then((demos: Demo[]) => this.demos = demos);
