@@ -14,7 +14,7 @@ import { DemoService }  from '../shared/demo.service';
 export class DemoDetailComponent implements OnInit {
   demo: Demo;
   showDetails = false;
-  searchFirstName = "";
+  demos: Demo[];
 
   constructor(
     private demoService: DemoService,
@@ -30,6 +30,10 @@ export class DemoDetailComponent implements OnInit {
       this.showDetails = false;
   }
 
+  public demoLink(id: number): string {
+      return "detail/" + id;
+  }
+
   ngOnInit(): void {
     this.route.params
       .switchMap((params: Params) => this.demoService.getDemoById(+params['id']))
@@ -37,6 +41,8 @@ export class DemoDetailComponent implements OnInit {
             this.demo = demo;
             this.searchFirstName = demo.firstName;
         });
+
+    this.demoService.getMostRecentDemos(10).then((demos: Demo[]) => this.demos = demos);
   }
 
   goBack(): void {

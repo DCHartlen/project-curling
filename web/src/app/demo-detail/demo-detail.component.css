@@ -6,7 +6,7 @@
 
 /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
 .row.content { 
-  height:625px;
+  height:800px;
   overflow:auto;
  }
 
@@ -25,7 +25,7 @@ footer {
   padding: 15px;
   bottom:0;
   width:100%;
-  position: absolute;
+  position: relative;
   height:60px;
 
 }
@@ -36,5 +36,8 @@ footer {
 
 .images{
   padding-top: 45px;
+}
 
+.mainText {
+    text-align: left;
 }

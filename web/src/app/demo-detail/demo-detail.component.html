@@ -6,17 +6,12 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Logo</a>
+            <a class="navbar-brand" href="#" style="background-color:black;color:white">Home</a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
-                <li><a href="#">Home</a></li>
-                <li><a>Graph</a></li>
-                <li><a>Session Overview</a></li>
-                <li><a>Compare</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                <li><a href="#myDiv">Graphical Representation</a></li>
+                <li><a href="#part2">Session Overview</a></li>
             </ul>
         </div>
     </div>
@@ -25,9 +20,18 @@
 <div class="container-fluid text-center">
     <div class="row content">
         <div class="col-sm-2 sidenav">
-            <p><a href="#">Graph1</a></p>
-            <p><a href="#">Graph2</a></p>
-            <p><a href="#">Graph3</a></p>
+            <h4> Most Recent Records </h4>
+            <div *ngFor="let recentDemo of demos">
+                <p><a [routerLink]="['/detail', recentDemo.id]">{{recentDemo.firstName}}</a></p>
+            </div>
+            <div class="images">
+                <div class="logos">
+                    <img src="images/logo1.png" alt="Curling Canada Logo" style="width:100px;height:50px;">
+                </div>
+                <div class="logos">
+                    <img src="images/dal_logo.gif" alt="Dal Logo" style="width:100px;height:50px;">
+                </div>
+            </div>
         </div>
         <div class="col-sm-8 text-left">
             <h1>Brushing Session Results Overview</h1>
@@ -79,27 +83,6 @@
                 <label> Mean Stroke Rate: </label>
                 {{demo.meanStrokeRate}}
                 <br>
-            </div>
-        </div>
-
-        <!--Sidebar -->
-        <div class="col-sm-2 sidenav">
-            <div class="well">
-                <p>TV Curler 1</p>
-            </div>
-            <div class="well">
-                <p>TV Curler 2</p>
-            </div>
-            <div class="well">
-                <p>TV Curler 3</p>
-            </div>
-            <div class="images">
-                <div class="logos">
-                    <img src="images/logo1.png" alt="Curling Canada Logo" style="width:100px;height:50px;">
-                </div>
-                <div class="logos">
-                    <img src="images/dal_logo.gif" alt="Dal Logo" style="width:100px;height:50px;">
-                </div>
             </div>
         </div>
     </div>
