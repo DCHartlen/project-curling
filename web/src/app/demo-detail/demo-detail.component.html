@@ -1,89 +1,231 @@
-﻿<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#" style="background-color:black;color:white">Home</a>
-        </div>
-        <div class="collapse navbar-collapse" id="myNavbar">
-            <ul class="nav navbar-nav">
-                <li><a href="#myDiv">Graphical Representation</a></li>
-                <li><a href="#part2">Session Overview</a></li>
-            </ul>
-        </div>
+<!-- Local Copy -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<link rel="icon" href="/Users/Aisha/devEnviroment/web/src/app/demo-detail/images/favicon.jpg" type="image/gif" sizes="100x100">
+<title> Brushing Session Results Overview</title>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- Links to css and js files-->
+<script src="demo-detail.component.js"></script>
+<link rel="stylesheet" type="text/css" href="../demo-detail.component.css">
+
+<!--W3Schools Libraries -->
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<!--Search and reset button functionality. Will export to js file later-->
+<script>
+	function ShowDiv() {
+    document.getElementById("myDiv").style.display = "";
+}
+	function reset(inputName){
+	 document.getElementById("myDiv").style.display = "none";
+	 inputName.value="";
+}
+ </script>
+
+
+<!--styles -->
+ <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */ 
+    .navbar {
+     margin-bottom: 0;
+     border-radius: 0;
+    }
+    
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content { 
+      height:800px;
+      overflow:auto;
+     }
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      padding-top: 20px;
+      background-color: #f1f1f1;
+      height: 100%;
+      min-height: 100%;
+    }
+    
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+      bottom:0;
+      width:100%;
+      position: relative;
+      height:60px;
+
+    }
+    .logos{
+      padding: 20px;
+      bottom: 0;
+    }
+
+    .images{
+      padding-top: 45px;
+    }
+
+    .mainText{
+      text-align:left;
+    }
+    
+  </style>
+
+</head>
+<body>
+
+	<nav class="navbar navbar-inverse">
+  		<div class="container-fluid">
+    		<div class="navbar-header">
+      			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        			<span class="icon-bar"></span>
+        			<span class="icon-bar"></span>
+      		  		<span class="icon-bar"></span>                        
+     			 </button>
+      			<a class="navbar-brand" href="#" style="background-color:black;color:white" onclick="reset(inputName)" >Home</a>
+   			 </div>
+   		 	<div class="collapse navbar-collapse" id="myNavbar">
+      			<ul class="nav navbar-nav">
+        			<li><a href="#myDiv">Graphical Representation</a></li>
+        			<li><a href="#part2">Session Overview</a></li>
+      			</ul>
+
+    		</div>
+  		</div>
+	</nav>
+
+	<div class="container-fluid text-center">    
+  		<div class="row content">
+    		<div class="col-sm-2 sidenav">
+          <h4> Most Recent Records </h4>
+      			<p><a href="#">User 1</a></p>
+      			<p><a href="#">User 2</a></p>
+      			<p><a href="#">User 3</a></p>
+            <p><a href="#">User 4</a></p>
+            <p><a href="#">User 5</a></p>
+            <p><a href="#">User 6</a></p>
+            <p><a href="#">User 7</a></p>
+            <p><a href="#">User 8</a></p>
+            <p><a href="#">User 9</a></p>
+            <p><a href="#">User 10</a></p>
+
+            <div class ="images">
+      <div class= "logos">
+        <img src="images/logo1.png" alt="Curling Canada Logo" style="width:100px;height:50px;">
+      </div>
+      <div class= "logos">
+        <img src="images/dal_logo.gif" alt="Dal Logo" style="width:100px;height:50px;">
+      </div>
     </div>
-</nav>
+    		</div>
+    		<!--<div class="col-sm-8 text-left"> -->
+          <h1>Brushing Session Results </h1>
+          <br>
+          <div id="mainText" style="text-align: left; padding-left: 230px">
+            <div id="searchBar">
+						<label>Name: </label>
+	    				<input id = "inputName"[(ngModel)]="demo.firstName" placeholder="Enter name"/>
+	    				<button onclick="ShowDiv()"> Search </button>
+	          </div>
 
-<div class="container-fluid text-center">
-    <div class="row content">
-        <div class="col-sm-2 sidenav">
-            <h4> Most Recent Records </h4>
-            <div *ngFor="let recentDemo of demos">
-                <p><a [routerLink]="['/detail', recentDemo.id]">{{recentDemo.firstName}}</a></p>
-            </div>
-            <div class="images">
-                <div class="logos">
-                    <img src="images/logo1.png" alt="Curling Canada Logo" style="width:100px;height:50px;">
-                </div>
-                <div class="logos">
-                    <img src="images/dal_logo.gif" alt="Dal Logo" style="width:100px;height:50px;">
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-8 text-left">
-            <h1>Brushing Session Results Overview</h1>
+						<!-- Attributes of the Session. Not sure which attributes we are usuing so added all of the most likely ones/-->
+	 					<div id="myDiv" style="display:none;" class="answer_list">
+	 	
+	 		        <h3> Brushing Session Graphical Representation</h3>
+	  	      
+	  	        <label>First Name: </label>
+	  	        {{demo.firstName}}
+	           <br>
 
-            <!-- Attributes of the Session. Not sure which attributes we are usuing so added all of the most likely ones/-->
-            <div *ngIf="demo" class="answer_list">
+	  	        <label>Last Name: </label>
+	  	        {{demo.lastName}}
+	             <br>
 
-                <h3> Review of the Brushing Session</h3>
-                <label>ID: </label>
-                {{demo.id}}
-                <br>
+              <!--Graph place holder-->
+              <div id="graph">
+                <p> This is where the graph will be
+                  * <br>
+                  * <br>
+                  * <br>
+                  * <br>
+                  * <br>
+                  * <br>
+                  * <br>
+                  * <br>
+                  * <br>
+                  * <br>
+                  * <br>
+                </p>
+               </div>
 
-                <label>First Name: </label>
-                {{demo.firstName}}
-                <br>
+        <!--Next part of page-->
+	       <div id ="part2">
+         <hr>
+        <h3>Brushing Session Overview </h3>
 
-                <label>Last Name: </label>
-                {{demo.lastName}}
-                <br>
+        <label>Broom Angle: </label>
+              {{demo.broomAngle}}
+              <br>
+    
+              <label>Mean Max Force: </label>
+              {{demo.meanMaximumForce}}
+               <br>
+     
+              <label> Mean Sustained Force: </label>
+            {{demo.meanSustainedForce}}
+             <br>
 
-                <label>Time Stamp: </label>
-                {{demo.timestamp}}
-                <br>
+            <label> Mean Brushing Force: </label>
+            {{demo.meanBrushingForce}}
+            <br>
 
-                <label>Email: </label>
-                {{demo.email}}
-                <br>
+            <label> Mean Stroke Rate: </label>
+            {{demo.meanStrokeRate}}
+            <br>
 
-                <label>Notes: </label>
-                {{demo.notes}}
-                <br>
+            <label>Notes: </label>
+              {{demo.notes}}
+               <br>
+               <br>
 
-                <label>Broom Angle: </label>
-                {{demo.processedData && demo.processedData[0]?.broomAngle}} degrees
-                <br>
-
-                <label>Mean Max Force: </label>
-                {{demo.meanMaximumForce}}
-                <br>
-
-                <label> Mean Sustained Force: </label>
-                {{demo.meanSustainedForce}}
-                <br>
-
-                <label> Mean Brushing Force: </label>
-                {{demo.meanBrushingForce}}
-                <br>
-
-                <label> Mean Stroke Rate: </label>
-                {{demo.meanStrokeRate}}
-                <br>
-            </div>
-        </div>
+      <!--reset button-->
+      <button onclick="reset(inputName)">Reset</button>
+      <br> <br> <br>
     </div>
+    </div>
+    </div>
+ </div>
+ <!-- div for the external css class from WW3      </div>    -->
 </div>
+
+<footer class="footer">
+  <div class= "container-fluid text-center">
+    <p> 
+      Team Brier &copy;
+      *
+      <a href="http://www.curling.ca" style= "color:white" >Curling Canada</a>
+      * 
+      <a href="https://projects.cs.dal.ca/communityoutreach/" style= "color:white" >Community Outreach</a>
+    </p>
+
+  </div>
+</footer>
+
+</body>
+</html>
