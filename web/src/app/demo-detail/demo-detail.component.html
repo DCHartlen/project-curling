@@ -33,40 +33,55 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-8 text-left">
-            <h1>Brushing Session Results Overview</h1>
 
-            <!-- Attributes of the Session. Not sure which attributes we are usuing so added all of the most likely ones/-->
-            <div *ngIf="demo" class="answer_list">
+        <div *ngIf="demo" id="myDiv" class="answer_list">
 
-                <h3> Review of the Brushing Session</h3>
-                <label>ID: </label>
-                {{demo.id}}
-                <br>
+            <h3> Brushing Session Graphical Representation</h3>
 
-                <label>First Name: </label>
-                {{demo.firstName}}
-                <br>
+            <label>First Name: </label>
+            {{demo.firstName}}
+            <br>
 
-                <label>Last Name: </label>
-                {{demo.lastName}}
-                <br>
+            <label>Last Name: </label>
+            {{demo.lastName}}
+            <br>
 
-                <label>Time Stamp: </label>
-                {{demo.timestamp}}
-                <br>
+            <label>Timestamp: </label>
+            {{demo.timestamp}}
+            <br>
 
-                <label>Email: </label>
-                {{demo.email}}
-                <br>
+            <!--Graph place holder-->
+            <div id="graph">
+                <p>
+                    This is where the graph will be
+                    * <br>
+                    * <br>
+                    * <br>
+                    * <br>
+                    * <br>
+                    * <br>
+                    * <br>
+                    * <br>
+                    * <br>
+                    * <br>
+                    * <br>
+                </p>
+            </div>
+
+            <!--Next part of page-->
+            <div id="part2">
+                <hr>
+                <h3>Brushing Session Overview </h3>
 
                 <label>Notes: </label>
                 {{demo.notes}}
                 <br>
 
-                <label>Broom Angle: </label>
-                {{demo.processedData && demo.processedData[0]?.broomAngle}} degrees
-                <br>
+                <div *ngIf="demo.processedData">
+                    <label>Broom Angle: </label>
+                    {{demo.processedData[0].broomAngle}}
+                    <br>
+                </div>
 
                 <label>Mean Max Force: </label>
                 {{demo.meanMaximumForce}}
@@ -83,7 +98,22 @@
                 <label> Mean Stroke Rate: </label>
                 {{demo.meanStrokeRate}}
                 <br>
+                <br>
+
             </div>
         </div>
     </div>
 </div>
+
+<footer class="footer">
+   <div class= "container-fluid text-center">
+     <p> 
+       Team Brier &copy;
+       *
+       <a href="http://www.curling.ca" style= "color:white" >Curling Canada</a>
+       * 
+       <a href="https://projects.cs.dal.ca/communityoutreach/" style= "color:white" >Community Outreach</a>
+     </p>
+ 
+   </div>
+</footer>
