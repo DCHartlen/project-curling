@@ -77,7 +77,7 @@
                 {{demo.notes}}
                 <br>
 
-                <div *ngIf="demo.processedData">
+                <div *ngIf="demo.processedData.length > 0">
                     <label>Broom Angle: </label>
                     {{demo.processedData[0].broomAngle}}
                     <br>
