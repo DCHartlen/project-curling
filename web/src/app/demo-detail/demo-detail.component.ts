@@ -91,7 +91,11 @@ export class DemoDetailComponent implements OnInit {
                             }
                         }],
                         xAxes: [{
-                            display: false,
+                            display: true,
+                            ticks{
+                              autoskip: true,
+                              maxTicksLimit: 25
+                            }
                             scaleLabel: {
                                 display: true,
                                 labelString: 'Point Number',

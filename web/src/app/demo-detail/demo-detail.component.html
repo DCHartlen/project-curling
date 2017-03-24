@@ -42,11 +42,6 @@
             {{demo.firstName}}
             <br>
 
-            <!--Graph place holder-->
-            <div *ngIf="demo.processedData.length > 0" id="chart-container">
-                <chart id="chart" [type]="type" [data]="data" [options]="options"></chart>
-            </div>
-
             <label>Last Name: </label>
             {{demo.lastName}}
             <br>
@@ -55,7 +50,10 @@
             {{demo.timestamp}}
             <br>
 
-
+            <!--Graph place holder-->
+            <div *ngIf="demo.processedData.length > 0" id="chart-container">
+                <chart id="chart" [type]="type" [data]="data" [options]="options"></chart>
+            </div>
             <!--Next part of page-->
             <div id="part2">
                 <hr>
@@ -95,13 +93,13 @@
 
 <footer class="footer">
    <div class= "container-fluid text-center">
-     <p> 
+     <p>
        Team Brier &copy;
        *
        <a href="http://www.curling.ca" style= "color:white" >Curling Canada</a>
-       * 
+       *
        <a href="https://projects.cs.dal.ca/communityoutreach/" style= "color:white" >Community Outreach</a>
      </p>
- 
+
    </div>
 </footer>
