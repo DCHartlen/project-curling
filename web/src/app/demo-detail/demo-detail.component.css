@@ -41,3 +41,12 @@ footer {
 .mainText {
     text-align: left;
 }
+
+#chart-container {
+    float: left;
+    display: block;
+}
+
+#chart {
+    height: 40vh;
+}

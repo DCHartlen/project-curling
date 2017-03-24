@@ -42,6 +42,11 @@
             {{demo.firstName}}
             <br>
 
+            <!--Graph place holder-->
+            <div *ngIf="demo.processedData.length > 0" id="chart-container">
+                <chart id="chart" [type]="type" [data]="data" [options]="options"></chart>
+            </div>
+
             <label>Last Name: </label>
             {{demo.lastName}}
             <br>
@@ -50,23 +55,6 @@
             {{demo.timestamp}}
             <br>
 
-            <!--Graph place holder-->
-            <div id="graph">
-                <p>
-                    This is where the graph will be
-                    * <br>
-                    * <br>
-                    * <br>
-                    * <br>
-                    * <br>
-                    * <br>
-                    * <br>
-                    * <br>
-                    * <br>
-                    * <br>
-                    * <br>
-                </p>
-            </div>
 
             <!--Next part of page-->
             <div id="part2">
