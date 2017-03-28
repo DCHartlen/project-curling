@@ -34,4 +34,12 @@ export class DemosComponent implements OnInit {
   gotoDetail(): void {
     this.router.navigate(['/detail', this.selectedDemo.id]);
   }
+  function gotoDetail() {
+    var x = document.getElementById('myDIV');
+    if (x.style.display === 'none') {
+        x.style.display = 'block';
+    } else {
+        x.style.display = 'none';
+    }
+}
 }
