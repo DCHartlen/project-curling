@@ -20,13 +20,13 @@
 <div class="container-fluid text-center">
     <div class="row content">
         <div class="col-sm-2 sidenav">
-            <h4> Most Recent Records </h4>
-            <form id="dayOfDemo">
-              <input type="date" id="day" value="toDate()"><br>
-              <input type="submit" id="submitDay">
-            </form><br>
+            <h4> Select Sessions by Date </h4>
+            <my-date-picker [options]="datePickerOptions" [selDate]="selDate" (dateChanged)="onDateChanged($event)"></my-date-picker>
+            <div *ngIf="searchMessage">
+                <p>{{ searchMessage }}</p>
+            </div>
             <div *ngFor="let recentDemo of demos">
-                <p *ngIf="returnFormatedDate(recentDemo.timestamp) == '2017-03-13'"><a [routerLink]="['/detail', recentDemo.id]">{{recentDemo.firstName}} {{recentDemo.lastName}}</a></p>
+                <p><a [routerLink]="['/detail', recentDemo.id]">{{recentDemo.firstName}} {{recentDemo.lastName}}</a></p>
             </div>
             <div class="images">
                 <div class="logos">

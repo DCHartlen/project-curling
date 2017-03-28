@@ -1,12 +1,13 @@
 import 'rxjs/add/operator/switchMap';
 import { Component, OnInit }      from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { Location }               from '@angular/common';
+import { Location, DatePipe }     from '@angular/common';
 
 import { Demo }         from '../shared/demo';
 import { DemoService }  from '../shared/demo.service';
 import { ProcessedDataPoint } from '../shared/processed-data-point';
 
+import {IMyOptions, IMyDateModel, IMyDate} from 'mydatepicker';
 
 @Component({
     moduleId: module.id,
@@ -17,34 +18,37 @@ import { ProcessedDataPoint } from '../shared/processed-data-point';
 export class DemoDetailComponent implements OnInit {
     demo: Demo;
     showDetails = false;
+
+    selectedDate: Date = undefined;
     demos: Demo[];
 
     type: string = undefined;
     data: any = undefined;
     options: any = undefined;
 
+    searchMessage = "";
+
+    private datePickerOptions: IMyOptions = {
+        dateFormat: 'mmm dd, yyyy',
+        showClearDateBtn: false,
+        editableDateField: false
+    };
+    private selDate: IMyDate = {
+        year: 0, month: 0, day: 0
+    };
 
     constructor(
         private demoService: DemoService,
         private route: ActivatedRoute,
-        private location: Location
-    ) { }
-
-    public showDiv(): void {
-        this.showDetails = true;
-    }
-
-    public reset(): void {
-        this.showDetails = false;
-    }
-
-    public demoLink(id: number): string {
-        return "detail/" + id;
-    }
-
-    public returnFormatedDate(date): string{
-      date = date.substring(0, 10);
-      return date;
+        private location: Location,
+        private datePipe: DatePipe
+    ) {
+        let now = new Date();
+        this.selDate = {
+            year: now.getFullYear(),
+            month: now.getMonth() + 1,
+            day: now.getDate()
+        };
     }
 
     ngOnInit(): void {
@@ -98,8 +102,8 @@ export class DemoDetailComponent implements OnInit {
                         xAxes: [{
                             display: true,
                             ticks: {
-                              autoskip: true,
-                              maxTicksLimit: 25
+                                autoskip: true,
+                                maxTicksLimit: 25
                             },
                             scaleLabel: {
                                 display: true,
@@ -109,7 +113,38 @@ export class DemoDetailComponent implements OnInit {
                     }
                 };
             });
-        this.demoService.getMostRecentDemos(10).then((demos: Demo[]) => this.demos = demos);
+
+        this.updateDemos(this.dateAsString(new Date()), this.dateAsString(this.addDays(new Date(), 1)));
+    }
+
+    updateDemos(start: string, end: string) {
+        this.searchMessage = "Looking for demos...";
+        this.demoService.getDemosByDate(start, end).then((demos: Demo[]) => {
+            this.demos = demos;
+            if (this.demos.length === 0) {
+                this.searchMessage = "No demos found";
+            } else {
+                this.searchMessage = "";
+            }
+        });
+        
+    }
+
+    onDateChanged(event: IMyDateModel) {
+        this.selDate = event.date;
+        if (this.selDate && event.jsdate) {
+            this.updateDemos(this.dateAsString(event.jsdate), this.dateAsString(this.addDays(event.jsdate, 1)));
+        }
+    }
+
+    dateAsString(date: Date) {
+        return this.datePipe.transform(date, 'yyyy-MM-dd');
+    }
+
+    addDays(date: Date, days: number) {
+        let result = new Date(date.valueOf());
+        result.setDate(result.getDate() + days);
+        return result;
     }
 
     goBack(): void {

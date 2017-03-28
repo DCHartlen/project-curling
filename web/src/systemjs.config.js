@@ -27,7 +27,8 @@
       'rxjs':                      'npm:rxjs',
       'angular-in-memory-web-api': 'npm:angular-in-memory-web-api/bundles/in-memory-web-api.umd.js',
       'angular2-chartjs': 'npm:angular2-chartjs',
-      'chart.js': 'npm:chart.js/dist/Chart.bundle.js'
+      'chart.js': 'npm:chart.js/dist/Chart.bundle.js',
+      'mydatepicker': 'npm:mydatepicker/bundles/mydatepicker.umd.js'
     },
     // packages tells the System loader how to load when no filename and/or no extension
     packages: {
