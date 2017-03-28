@@ -18,6 +18,10 @@
   min-height: 100%;
 }
 
+#dayOfDemo :first-child{
+  margin: 5px;
+}
+
 /* Set black background color, white text and some padding */
 footer {
   background-color: #555;

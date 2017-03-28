@@ -21,9 +21,10 @@
     <div class="row content">
         <div class="col-sm-2 sidenav">
             <h4> Most Recent Records </h4>
-            <form>
-              <input type="date" id="day">
-            </form>
+            <form id="dayOfDemo">
+              <input type="date" id="day" value="toDate()"><br>
+              <input type="submit" id="submitDay">
+            </form><br>
             <div *ngFor="let recentDemo of demos">
                 <p *ngIf="returnFormatedDate(recentDemo.timestamp) == '2017-03-13'"><a [routerLink]="['/detail', recentDemo.id]">{{recentDemo.firstName}} {{recentDemo.lastName}}</a></p>
             </div>
