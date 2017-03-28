@@ -42,6 +42,11 @@ export class DemoDetailComponent implements OnInit {
         return "detail/" + id;
     }
 
+    public returnFormatedDate(date): string{
+      date = date.substring(0, 10);
+      return date;
+    }
+
     ngOnInit(): void {
         this.route.params
             .switchMap((params: Params) => this.demoService.getDemoById(+params['id']))
@@ -104,7 +109,6 @@ export class DemoDetailComponent implements OnInit {
                     }
                 };
             });
-
         this.demoService.getMostRecentDemos(10).then((demos: Demo[]) => this.demos = demos);
     }
 
