@@ -6,10 +6,8 @@ import { DemosComponent }      from './demos/demos.component';
 import { DemoDetailComponent }  from './demo-detail/demo-detail.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/recent', pathMatch: 'full' },
-  { path: 'recent',  component: DashboardComponent },
-  { path: 'detail/:id', component: DemoDetailComponent },
-  { path: 'all',     component: DemosComponent }
+  { path: '', redirectTo: '/detail/-1', pathMatch: 'full' },
+  { path: 'detail/:id', component: DemoDetailComponent }
 ];
 
 @NgModule({

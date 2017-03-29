@@ -41,6 +41,11 @@
                 </div>
             </div>
         </div>
+		
+		<div id="pickDemoHeader" *ngIf="!demo">
+		    <h1>Welcome to the Curling Demonstration Application</h1>
+			<p>Please choose a date from the left and select a demo</p>
+		</div>
 
         <div *ngIf="demo" id="myDiv" class="answer_list">
 
