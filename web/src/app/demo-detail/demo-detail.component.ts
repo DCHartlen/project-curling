@@ -56,64 +56,65 @@ export class DemoDetailComponent implements OnInit {
             .switchMap((params: Params) => this.demoService.getDemoById(+params['id']))
             .subscribe((demo: Demo) => {
                 this.demo = demo;
-                this.type = 'line';
-                this.data = {
-                    labels: this.demo.processedData.map(function (point, index) {
-                        return index.toString();
-                    }),
-                    datasets: [
-                        {
-                            label: this.demo.firstName,
-                            data: this.demo.processedData.map(function (point: ProcessedDataPoint) {
-                                return point.verticalForce;
-                            }),
-                            fill: true,
-                            lineTension: 0.1,
-                            backgroundColor: "rgba(75,192,192,0.4)",
-                            borderColor: "rgba(75,192,192,1)",
-                            borderCapStyle: 'butt',
-                            borderDash: [],
-                            borderDashOffset: 0.0,
-                            borderJoinStyle: 'miter',
-                            pointBorderColor: "rgba(75,192,192,1)",
-                            pointBackgroundColor: "#fff",
-                            pointBorderWidth: 1,
-                            pointHoverRadius: 5,
-                            pointHoverBackgroundColor: "rgba(75,192,192,1)",
-                            pointHoverBorderColor: "rgba(220,220,220,1)",
-                            pointHoverBorderWidth: 2,
-                            pointRadius: 1,
-                            pointHitRadius: 10,
-                            spanGaps: false
+                if (this.demo) {
+                    this.type = 'line';
+                    this.data = {
+                        labels: this.demo.processedData.map(function (point, index) {
+                            return index.toString();
+                        }),
+                        datasets: [
+                            {
+                                label: this.demo.firstName,
+                                data: this.demo.processedData.map(function (point: ProcessedDataPoint) {
+                                    return point.verticalForce;
+                                }),
+                                fill: true,
+                                lineTension: 0.1,
+                                backgroundColor: "rgba(75,192,192,0.4)",
+                                borderColor: "rgba(75,192,192,1)",
+                                borderCapStyle: 'butt',
+                                borderDash: [],
+                                borderDashOffset: 0.0,
+                                borderJoinStyle: 'miter',
+                                pointBorderColor: "rgba(75,192,192,1)",
+                                pointBackgroundColor: "#fff",
+                                pointBorderWidth: 1,
+                                pointHoverRadius: 5,
+                                pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                                pointHoverBorderColor: "rgba(220,220,220,1)",
+                                pointHoverBorderWidth: 2,
+                                pointRadius: 1,
+                                pointHitRadius: 10,
+                                spanGaps: false
+                            }
+                        ]
+                    };
+                    this.options = {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scaleShowLabels: false,
+                        scales: {
+                            yAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Brushing Force (kg)'
+                                }
+                            }],
+                            xAxes: [{
+                                display: true,
+                                ticks: {
+                                    autoskip: true,
+                                    maxTicksLimit: 25
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Point Number',
+                                }
+                            }],
                         }
-                    ]
-                };
-                this.options = {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scaleShowLabels: false,
-                    scales: {
-                        yAxes: [{
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Brushing Force (kg)'
-                            }
-                        }],
-                        xAxes: [{
-                            display: true,
-                            ticks: {
-                                autoskip: true,
-                                maxTicksLimit: 25
-                            },
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Point Number',
-                            }
-                        }],
-                    }
-                };
+                    };
+                }
             });
-
         this.updateDemos(this.dateAsString(new Date()), this.dateAsString(this.addDays(new Date(), 1)));
     }
 
@@ -127,7 +128,7 @@ export class DemoDetailComponent implements OnInit {
                 this.searchMessage = "";
             }
         });
-        
+
     }
 
     onDateChanged(event: IMyDateModel) {

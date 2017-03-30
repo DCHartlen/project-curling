@@ -50,6 +50,5 @@ export class DemoService {
 
   private handleError(error: Response | any) {
       console.log(error);
-      return Observable.throw(error || "Database Error");
   }
 }
