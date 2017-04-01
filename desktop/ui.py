@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 
 from database import RawDataPoint, ProcessedDataPoint, Session
+from brushing_statistics import BrushingStatistics
 
 HOST = "192.168.4.1"
 PORT = 23
@@ -182,8 +183,19 @@ class UI(QtGui.QWidget):
             for index, processed_data in self.processor.p_data.loc[:, [0, 'v_force', 'h_force']].iterrows():
                 processed_data_points.append(ProcessedDataPoint(*processed_data, broom_angle=self.processor.angle))
 
+            stats = BrushingStatistics([x.values["horizontalForce"] for x in processed_data_points], 10.0) # demo is currently 10.0 seconds
+
             try:
-                session = Session(fNameEdit.text(), raw_data_points, processed_data_points, lNameEdit.text(), notes.toPlainText())
+                session = Session(fNameEdit.text(), 
+                                  raw_data_points, 
+                                  processed_data_points, 
+                                  lNameEdit.text(), 
+                                  notes.toPlainText(), 
+                                  None,
+                                  stats.mean_maximum_force(),
+                                  stats.mean_sustained_force(),
+                                  stats.mean_brushing_force(),
+                                  stats.mean_stroke_rate())
                 id = session.save()
             except RuntimeError as error:
                 print(error)
