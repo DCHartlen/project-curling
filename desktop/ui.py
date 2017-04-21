@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 
 from database import RawDataPoint, ProcessedDataPoint, Session
+from brushing_statistics import BrushingStatistics
 
 HOST = "192.168.4.1"
 PORT = 23
@@ -35,6 +36,8 @@ class UI(QtGui.QWidget):
         global lNameEdit
         global notes
         global btnDiscard
+        global msgBox
+
 
         #creating buttons, labels, textboxes.
         self.setWindowIcon(QtGui.QIcon(os.path.join('images', 'disconnected.png')))
@@ -61,6 +64,9 @@ class UI(QtGui.QWidget):
         notes = QtGui.QTextEdit()
         fNameEdit = QtGui.QLineEdit()
         lNameEdit = QtGui.QLineEdit()
+        msgBox = QtGui.QMessageBox()
+        msgBox.setText("Remember to change your network connection!")
+
 
         #fonts
         titleFont = QtGui.QFont()
@@ -182,8 +188,19 @@ class UI(QtGui.QWidget):
             for index, processed_data in self.processor.p_data.loc[:, [0, 'v_force', 'h_force']].iterrows():
                 processed_data_points.append(ProcessedDataPoint(*processed_data, broom_angle=self.processor.angle))
 
+            stats = BrushingStatistics([x.values["horizontalForce"] for x in processed_data_points], 10.0) # demo is currently 10.0 seconds
+
             try:
-                session = Session(fNameEdit.text(), raw_data_points, processed_data_points, lNameEdit.text(), notes.toPlainText())
+                session = Session(fNameEdit.text(),
+                                  raw_data_points,
+                                  processed_data_points,
+                                  lNameEdit.text(),
+                                  notes.toPlainText(),
+                                  None,
+                                  stats.mean_maximum_force(),
+                                  stats.mean_sustained_force(),
+                                  stats.mean_brushing_force(),
+                                  stats.mean_stroke_rate())
                 id = session.save()
             except RuntimeError as error:
                 print(error)
@@ -222,6 +239,7 @@ class UI(QtGui.QWidget):
         if progress == 0:
             self.conn_worker.record = True
         if progress == 100:
+            msgBox.show()
             self.conn_worker.record = False
 
 #This class is used to multithread the timer, so it doesn't freeze the UI.
@@ -298,16 +316,15 @@ class ProcessingWorking(QtCore.QThread):
         self.data = data
         angle_f = [float(x) for x in angle.split(', ')]
         quo = angle_f[5] / angle_f[6]
-        self.angle = np.rad2deg(np.tan(quo))
+        self.angle = np.arctan(quo)
         self.p_data = None
-        print "Angle tan(%d/%d (%f)): %f" % (angle_f[5], angle_f[6], quo, self.angle)
+        print "Angle tan(%d/%d (%f)): %f" % (angle_f[5], angle_f[6], quo, np.rad2deg(self.angle))
 
     def run(self):
         # Process out of raw format
         arr = []
         for row in self.data.split('\n'):
             try:
-                print row
                 cols = [int(x) for x in row.split(', ')] # Converts columns to ints
                 if len(cols) == 15:
                     arr.append(cols)
