@@ -1,0 +1,63 @@
+/* Remove the navbar's default margin-bottom and rounded borders */
+.navbar {
+ margin-bottom: 0;
+ border-radius: 0;
+}
+
+/* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+.row.content {
+  height:800px;
+  overflow:auto;
+ }
+
+/* Set gray background color and 100% height */
+.sidenav {
+  padding-top: 20px;
+  background-color: #f1f1f1;
+  height: 100%;
+  min-height: 100%;
+}
+
+#dayOfDemo :first-child{
+  margin: 5px;
+}
+
+#pickDemoHeader {
+	padding: 20px;
+	padding-top: 15em;
+}
+
+/* Set black background color, white text and some padding */
+footer {
+  background-color: #555;
+  color: white;
+  padding: 15px;
+  bottom:0;
+  width:100%;
+  position: relative;
+  height:60px;
+
+}
+.logos{
+  padding: 20px;
+  bottom: 0;
+}
+
+.images{
+  padding-top: 45px;
+}
+
+.mainText {
+    text-align: left;
+}
+
+#chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#chart {
+    width: 55vw;
+    height: 55vh;
+}

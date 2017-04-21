@@ -14,7 +14,6 @@ export class DashboardComponent implements OnInit{
   constructor(private demoService: DemoService) { }
 
   ngOnInit(): void {
-    this.demoService.getDemos()
-        .then((demos: Demo[]) => this.demos = demos.slice(0, 3));
+      this.demoService.getMostRecentDemos(3).then(demos => this.demos = demos);
   }
 }

@@ -1,10 +1,112 @@
-<div *ngIf="demo">
-  <h2>{{demo.firstName}} Demo Details!</h2>
-  <div><label>id: </label>{{demo.id}}</div>
-  <div>
-    <label>name: </label>
-    <input [(ngModel)]="demo.firstName" placeholder="name"/>
-  </div>
-  <div><label>Mean Max Force: </label>{{demo.meanMaximumForce}}</div>
-  <button (click)="goBack()">Back</button>
+﻿<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" style="background-color:black;color:white">Home</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid text-center">
+    <div class="row content">
+        <div class="col-sm-2 sidenav">
+            <h4> Select Session by Date </h4>
+            <my-date-picker [options]="datePickerOptions" [selDate]="selDate" (dateChanged)="onDateChanged($event)"></my-date-picker>
+            <div *ngIf="searchMessage">
+                <p>{{ searchMessage }}</p>
+            </div>
+            <div *ngFor="let recentDemo of demos">
+                <p><a [routerLink]="['/detail', recentDemo.id]">{{recentDemo.firstName}} {{recentDemo.lastName}}</a></p>
+            </div>
+            <div class="images">
+                <div class="logos">
+                     <a href="http://www.curling.ca">
+                        <img src="images/logo1.png" alt="Curling Canada Logo" style="width:100px;height:50px;">
+                    </a>
+                </div>
+                <div class="logos">
+                <a href="https://projects.cs.dal.ca/communityoutreach/">
+                    <img src="images/dal_logo.gif" alt="Dal Logo" style="width:100px;height:50px;">
+                </a>
+                </div>
+            </div>
+        </div>
+		
+		<div *ngIf="!demo" id="pickDemoHeader">
+		    <h1>Welcome to the Curling Demonstration Application</h1>
+			<p>Please choose a date from the left and select a demo</p>
+		</div>
+
+        <div *ngIf="demo" id="myDiv" class="answer_list">
+
+            <h3> Brushing Session Graphical Representation</h3>
+
+            <label>First Name: </label>
+            {{demo.firstName}}
+            <br>
+
+            <label>Last Name: </label>
+            {{demo.lastName}}
+            <br>
+
+            <label>Timestamp: </label>
+            {{demo.timestamp}}
+            <br>
+
+            <!--Graph place holder-->
+            <div *ngIf="demo.processedData.length > 0" id="chart-container">
+                <chart id="chart" [type]="type" [data]="data" [options]="options"></chart>
+            </div>
+            <!--Next part of page-->
+            <div id="part2">
+                <hr>
+                <h3>Brushing Session Overview </h3>
+
+                <label>Notes: </label>
+                {{demo.notes}}
+                <br>
+
+                <div *ngIf="demo.processedData.length > 0">
+                    <label>Broom Angle: </label>
+                    {{demo.processedData[0].broomAngle}}
+                    <br>
+                </div>
+
+                <label>Mean Max Force: </label>
+                {{demo.meanMaximumForce}}
+                <br>
+
+                <label> Mean Sustained Force: </label>
+                {{demo.meanSustainedForce}}
+                <br>
+
+                <label> Mean Brushing Force: </label>
+                {{demo.meanBrushingForce}}
+                <br>
+
+                <label> Mean Stroke Rate: </label>
+                {{demo.meanStrokeRate}}
+                <br>
+                <br>
+
+            </div>
+        </div>
+    </div>
 </div>
+
+<footer class="footer">
+   <div class= "container-fluid text-center">
+     <p>
+       Developed by Team Brier &copy;
+       *
+       <a href="http://www.curling.ca" style= "color:white" >Curling Canada</a>
+       *
+       <a href="https://projects.cs.dal.ca/communityoutreach/" style= "color:white" >Community Outreach</a>
+     </p>
+
+   </div>
+</footer>
